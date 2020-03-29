@@ -15,31 +15,70 @@ textarea{
 
 .jumbotron {
   text-align: center;
-  background-color: transparent;
-  color: black;
+  background-color: green;
+  color: white;
   border-radius: 0;
-  border-bottom: 10px solid black;
 }
 
-.description{
-  white-space: pre-wrap;
+.container {
+
+  max-width: 700px;
 }
 
-.time-block{
-  text-align: center;
-  border-radius: 15px;
+.bottom-right { 
+  bottom: -110px; 
+  right: 0; 
+}
+
+.add-task-btn{
+  height: 5rem;
+  width: 5rem;
+  border-radius: 2.5rem;
+  background:lightgreen;
+}
+
+.btn-primary{
+  background:lightgreen;
+  border-color: lightgreen;
+}
+
+.icon-plus{
+  height:3rem;
+}
+
+.schedule{
+  margin-top: 50px;
+}
+
+.time-bar{
+  border-bottom: 1px solid red;
+  top: 50px;
+  width: 100%;
+  z-index: 999;
+}
+
+.time { 
+  top: -15px; 
+  right: 5px; 
+  color: red;
 }
 
 .row {
-  white-space: pre-wrap;
+  border-top: 1px solid lightgray;
   height: 80px;
-  border-top: 1px solid white;;
+  overflow: visible;
 }
 
 .hour {
+  padding-top: 0.25rem;
   background-color: #ffffff;
   color: #000000;
-  border-top: 1px dashed #000000;
+}
+
+.body-col {
+  padding-top: 0.25rem;
+  background-color: #ffffff;
+  color: #000000;
 }
 
 .past {
@@ -55,6 +94,20 @@ textarea{
 .future {
   background-color: #77dd77;
   color: white;
+}
+
+.modal-dialog{
+  top: 200px
+}
+
+.event-name{
+  border-width: 0px;
+  font-size: 1.75rem;
+  border-bottom: 1px, black;
+}
+
+.time-input{
+  width: 150px;
 }
 
 .saveBtn {

@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -23,16 +27,181 @@
   </head>
 
   <body>
-    <header class="jumbotron">
-      <h1 class="display-3">Work Day Scheduler</h1>
-      <p class="lead">A simple calendar app for scheduling your work day</p>
-      <p id="currentDay" class="lead"></p>
+    <header class="jumbotron sticky-top">
+      <div class="container h-100">
+        <div class="position-relative h-100">
+          <h1 class="display-2" id="dayOfTheWeek">Work Day Scheduler</h1>
+          <h2 class="display-5" id="date">A simple calendar app for scheduling your work day</h2>
+
+          <div class="position-absolute bottom-right">
+            <button class="btn add-task-btn show-modal my-auto" data-toggle="modal" data-target="#addTaskModal">
+                <img class="icon-plus" src="assets/images/plus.svg">
+            </button>
+          </div>
+      </div>
+    </div>
     </header>
-    <div class="container">
+    
+    </div>
+
+    <div class="container schedule">
       <!-- Timeblocks go here -->
+    </div>
+
+    <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <input type="text" class="event-name" placeholder="Event Name"></input>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Star Time</label>
+              <select class="form-control time-input" id="startTime">
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>End Time</label>
+              <select class="form-control time-input" id="endTime">
+              </select>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Add</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script>
+      
+      var timeEl;
+      var timeBarEl;
+
+      $(document).ready(function(){
+
+          $("#dayOfTheWeek").text(moment().format("dddd"));
+          $("#date").text(moment().format("MMMM Do, YYYY"));
+          
+          addPlannerRows();
+
+          renderTimeIndicator();
+
+          populateTimeDropwdowns();
+
+          window.setInterval(function(){
+
+            var s = moment().format("s");
+
+            printTime();
+
+            setTimeIndicatorTop();
+
+            },1000);
+
+      });
+
+      $("#startTime").change(function(){
+        var startIndex = this.selectedIndex;
+
+        var endIndex = startIndex + 2;
+
+        $("#endTime").prop("selectedIndex",endIndex);
+
+      });
+
+      function renderTimeIndicator()
+      {
+        timeBarEl = $("<div>").addClass("position-absolute time-bar");
+        timeEl = $("<div>").addClass("position-absolute time");
+
+        timeBarEl.append(timeEl);
+
+        var bodyEl = $("body");
+
+        setTimeIndicatorTop();
+
+        bodyEl.append(timeBarEl);
+
+      }
+
+      function setTimeIndicatorTop()
+      {
+        var firstRow = $(".row:first");
+
+        var firstRowTop = firstRow.position().top;
+        var rowHeight = firstRow.outerHeight();
+
+        var barTop = firstRowTop + getTimeInHours() * rowHeight;
+
+        timeBarEl.css({top: barTop + "px"});
+
+      }
+
+      function printTime()
+      {
+        timeEl.text(moment().format("hh:mma"));
+      }
+
+      function populateTimeDropwdowns()
+      {
+        var timeInputEls = $(".time-input");
+
+        for (i = 0; time != "5:00pm"; i++){
+    
+          var time = moment("9:00","h:mm").add(i*30,'minutes').format("h:mma");
+
+          var timeOption = $("<option>").text(time);
+
+          timeInputEls.append(timeOption);
+
+        }
+
+        $("#endTime").prop("selectedIndex",2);
+
+      }
+
+      function addPlannerRows(){
+
+        var schedule = $(".schedule");
+
+        for(i = 0; i <= 24; i++){
+
+          schedule.append(drawHourRow(i));
+
+        }
+      }
+
+      function drawHourRow(hour)
+      {
+        var row = $("<div>").addClass("row").attr("data-time",hour);
+
+        var infoCol = $("<div>").addClass("col-md-2 hour").text(moment(hour + ":00","H:mm").format("h:mma"));
+
+        var bodyCol = $("<div>").addClass("col-md-10 body-col");
+
+        row.append(infoCol)
+        row.append(bodyCol);
+
+        return row;
+      }
+
+      function getTimeInHours()
+      {
+        var timeInHours = moment().hours() + moment().minutes()/60;
+
+        return timeInHours;
+
+      }
+
+    </script>
   </body>
 </html>
