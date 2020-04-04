@@ -74,8 +74,8 @@
       }
 
 
-      function setTimeIndicatorTop()
-      {
+      function setTimeIndicatorTop(){
+
         const firstRow = $(".row:first");
 
         const firstRowTop = firstRow.position().top;
@@ -150,7 +150,6 @@
 
         return row;
       }
-
 
       function addEvent(startTime, duration, name){
         

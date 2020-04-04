@@ -41,6 +41,9 @@ textarea{
   width: 5rem;
   border-radius: 2.5rem;
   background:lightgreen;
+  border-color: green;
+  border-width: 2px;
+  border-style: solid;
 }
 
 .btn-primary{
@@ -48,8 +51,9 @@ textarea{
   border-color: lightgreen;
 }
 
-.icon-plus{
-  height:3rem;
+.fa-plus{
+    font-size:1.5rem;
+    color: white;
 }
 
 .schedule{
