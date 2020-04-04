@@ -21,13 +21,19 @@ textarea{
 }
 
 .container {
-
   max-width: 700px;
 }
 
 .bottom-right { 
   bottom: -110px; 
   right: 0; 
+}
+
+.invalid-option{
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545;
+  visibility: collapse;
 }
 
 .add-task-btn{
@@ -55,6 +61,26 @@ textarea{
   top: 50px;
   width: 100%;
   z-index: 999;
+}
+
+.event{
+  padding: auto;
+  margin-left: 80px;
+  width: 600px;
+  z-index: 998;
+  border-radius: 10px;
+  background-color: lightgreen;
+  border-style: solid;
+  border-width: 1px;
+  padding: 5px 10px;
+}
+
+.past-event{
+  opacity: 0.5;
+}
+
+.event-text{
+  color: white;
 }
 
 .time { 

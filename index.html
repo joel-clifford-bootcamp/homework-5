@@ -52,14 +52,15 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <input type="text" class="event-name" placeholder="Event Name"></input>
+            <input type="text" id="eventName" placeholder="Event Name"></input>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
+
           <div class="modal-body">
             <div class="form-group">
-              <label>Star Time</label>
+              <label>Start Time</label>
               <select class="form-control time-input" id="startTime">
               </select>
             </div>
@@ -68,12 +69,15 @@
               <label>End Time</label>
               <select class="form-control time-input" id="endTime">
               </select>
+              <div class="invalid-option" id="endTimeValidation">
+                End Time must be later than Start Time
+              </div>
             </div>
 
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Add</button>
+            <button type="button" class="btn btn-success" id="addEvent" data-dismiss="modal">Add</button>
           </div>
         </div>
       </div>
@@ -81,127 +85,7 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script>
+    <script src="script.js"></script>
       
-      var timeEl;
-      var timeBarEl;
-
-      $(document).ready(function(){
-
-          $("#dayOfTheWeek").text(moment().format("dddd"));
-          $("#date").text(moment().format("MMMM Do, YYYY"));
-          
-          addPlannerRows();
-
-          renderTimeIndicator();
-
-          populateTimeDropwdowns();
-
-          window.setInterval(function(){
-
-            var s = moment().format("s");
-
-            printTime();
-
-            setTimeIndicatorTop();
-
-            },1000);
-
-      });
-
-      $("#startTime").change(function(){
-        var startIndex = this.selectedIndex;
-
-        var endIndex = startIndex + 2;
-
-        $("#endTime").prop("selectedIndex",endIndex);
-
-      });
-
-      function renderTimeIndicator()
-      {
-        timeBarEl = $("<div>").addClass("position-absolute time-bar");
-        timeEl = $("<div>").addClass("position-absolute time");
-
-        timeBarEl.append(timeEl);
-
-        var bodyEl = $("body");
-
-        setTimeIndicatorTop();
-
-        bodyEl.append(timeBarEl);
-
-      }
-
-      function setTimeIndicatorTop()
-      {
-        var firstRow = $(".row:first");
-
-        var firstRowTop = firstRow.position().top;
-        var rowHeight = firstRow.outerHeight();
-
-        var barTop = firstRowTop + getTimeInHours() * rowHeight;
-
-        timeBarEl.css({top: barTop + "px"});
-
-      }
-
-      function printTime()
-      {
-        timeEl.text(moment().format("hh:mma"));
-      }
-
-      function populateTimeDropwdowns()
-      {
-        var timeInputEls = $(".time-input");
-
-        for (i = 0; time != "5:00pm"; i++){
-    
-          var time = moment("9:00","h:mm").add(i*30,'minutes').format("h:mma");
-
-          var timeOption = $("<option>").text(time);
-
-          timeInputEls.append(timeOption);
-
-        }
-
-        $("#endTime").prop("selectedIndex",2);
-
-      }
-
-      function addPlannerRows(){
-
-        var schedule = $(".schedule");
-
-        for(i = 0; i <= 24; i++){
-
-          schedule.append(drawHourRow(i));
-
-        }
-      }
-
-      function drawHourRow(hour)
-      {
-        var row = $("<div>").addClass("row").attr("data-time",hour);
-
-        var infoCol = $("<div>").addClass("col-md-2 hour").text(moment(hour + ":00","H:mm").format("h:mma"));
-
-        var bodyCol = $("<div>").addClass("col-md-10 body-col");
-
-        row.append(infoCol)
-        row.append(bodyCol);
-
-        return row;
-      }
-
-      function getTimeInHours()
-      {
-        var timeInHours = moment().hours() + moment().minutes()/60;
-
-        return timeInHours;
-
-      }
-
-    </script>
   </body>
 </html>
