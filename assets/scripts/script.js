@@ -1,7 +1,7 @@
 
       let timeEl;
       let timeBarEl;
-      const eventEls = [];
+      const events = [];
 
 
       $(document).ready(function(){
@@ -41,20 +41,16 @@
 
 
       $("#addEvent").click(function(){
-          
+
           const eventName = $("#eventName").val();
 
-          const startTimeEl = $("#startTime");
+          const startMoment = moment($("#startTime").val(),'LT');
 
-          const startTime = startTimeEl.val();
+          const endMoment = moment($("#endTime").val(),'LT');
 
-          const startIdx = startTimeEl.prop("selectedIndex");
+          Event.isConflict(startMoment,endMoment,null);
 
-          const endIdx = $("#endTime").prop("selectedIndex");
-
-          const duration = (endIdx - startIdx + 1)/2;
-
-          addEvent(startTime,duration,eventName);
+          events.push(new Event(eventName, startMoment, endMoment));
       });
 
 
@@ -135,7 +131,6 @@
         }
       }
 
-
       function drawHourRow(hour) {
 
         const row = $("<div>").addClass("row");
@@ -151,35 +146,6 @@
         return row;
       }
 
-      function addEvent(startTime, duration, name){
-        
-        const startHour = moment(startTime,"LT").format("H");
-
-        const startHalfHours = moment(startTime,"LT").format("m") == 30 ? 0.5 : 0;
-
-        const startTimeInHours = parseInt(startHour) + parseFloat(startHalfHours);
-
-        const firstRow = $(".row:first");
-
-        const firstRowTop = firstRow.position().top;
-
-        const rowHeight = firstRow.outerHeight();
-
-        const top = firstRowTop + startTimeInHours * rowHeight;
-
-        const eventEl = $("<div>").addClass("event position-absolute").attr("data-time",startTime);
-
-        eventEl.css({"top" : top + "px", "height" : duration * rowHeight + "px"});
-          
-        const nameEl = $("<h5>").addClass("event-text").text(name);
-        
-        eventEl.append(nameEl);
-
-        eventEls.push(eventEl);
-
-        $(".schedule").append(eventEl);
-      }
-
 
       function getTimeInHours() {
 
@@ -191,18 +157,81 @@
 
       function updateEvents(){
 
-        eventEls.forEach(eventEl => {
+        events.forEach(event => {
 
-          const eventStartTime = moment(eventEl.attr("data-time"),"LT");
+          const eventStartTime = moment(event.startTime,"LT");
 
           const currentTime = moment();
 
           const isPastEvent = moment(currentTime).isAfter(eventStartTime);
 
-        if(!eventEl.hasClass("past-event") &&  isPastEvent){
+        if(!event.eventEl.hasClass("past-event") &&  isPastEvent){
 
-          eventEl.addClass("past-event");
+          event.eventEl.addClass("past-event");
 
         } 
       }); 
+    }
+
+    class Event{
+      constructor (name, startMoment, endMoment){
+        this.name = name;
+        
+        this.startMoment = startMoment;
+
+        this.endMoment = endMoment;
+
+        console.log(startMoment, endMoment);
+
+        this.eventEl = Event.renderEvent(this);
+      }
+
+      static renderEvent(event){
+
+        const startTimeInHours = Event.getTimeInFractionalHours(event.startMoment);
+
+        const firstRow = $(".row:first");
+
+        const firstRowTop = firstRow.position().top;
+
+        const rowHeight = firstRow.outerHeight();
+
+        const durationInHours = moment(event.endMoment).subtract(event.startMoment).minutes() / 60;
+
+        const top = firstRowTop + startTimeInHours * rowHeight;
+
+        const eventEl = $("<div>").addClass("event position-absolute");
+
+        eventEl.css({"top" : top + "px", "height" : durationInHours * rowHeight + "px"});
+          
+        const nameEl = $("<h5>").addClass("event-text").text(name);
+        
+        eventEl.append(nameEl);
+
+        $(".schedule").append(eventEl);
+
+        return eventEl;
+
+      }
+
+      static getTimeInFractionalHours(startMoment){
+
+        const startHour = moment(startMoment).format("H");
+
+        const startHalfHours = moment(startMoment).format("m") === "30" ? 0.5 : 0;
+
+        return parseInt(startHour) + parseFloat(startHalfHours);
+      }
+
+
+      static isConflict(testStartTime, testEndMoment, existingEvent){
+
+        const testStartMoment = moment(testStartTime,'LT');
+
+        testEndMoment = moment(moment(testStartMoment).clone().add(testDuration));
+
+        //console.log(testStartMoment, testDuration, testEndMoment);
+
+
+      }
     }
