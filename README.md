@@ -7,6 +7,8 @@
 - Enter a Title, Start Time, End Time and Click submit
 - Events fade as they become past events
 
+## To Do
+- Add validation to inputs
 
 ## Assignment Details
 
